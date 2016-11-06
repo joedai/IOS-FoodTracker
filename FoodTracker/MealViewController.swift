@@ -15,7 +15,7 @@ class MealViewController: UIViewController,UITextFieldDelegate,UIImagePickerCont
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var ratingControl: RatingControl!
     @IBOutlet weak var saveButton: UIBarButtonItem!
-    @IBOutlet weak var cancel: UIBarButtonItem!
+
     /*
      This value is either passed by `MealTableViewController` in `prepareForSegue(_:sender:)`
      or constructed as part of adding a new meal.
@@ -98,7 +98,8 @@ class MealViewController: UIViewController,UITextFieldDelegate,UIImagePickerCont
     }
  
     
-    @IBAction func cancel(sender: UIBarButtonItem) {
+    @IBAction func cancel(_ sender: UIBarButtonItem) {
+        print("cancel")
         dismiss(animated: true, completion: nil)
     }
 }
