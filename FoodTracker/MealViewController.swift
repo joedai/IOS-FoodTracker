@@ -14,22 +14,44 @@ class MealViewController: UIViewController,UITextFieldDelegate,UIImagePickerCont
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var ratingControl: RatingControl!
+    @IBOutlet weak var saveButton: UIBarButtonItem!
+    @IBOutlet weak var cancel: UIBarButtonItem!
+    /*
+     This value is either passed by `MealTableViewController` in `prepareForSegue(_:sender:)`
+     or constructed as part of adding a new meal.
+     */
+    var meal: Meal?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         nameTextField.delegate = self
+        checkValidMealName()
     }
     
     // MARK: UITextFieldDelegate
+    func textFieldDidBeginEditing(textField: UITextField) {
+        // Disable the Save button while editing.
+        saveButton.isEnabled = false
+    }
+    
+    func checkValidMealName() {
+        // Disable the Save button if the text field is empty.
+        let text = nameTextField.text ?? ""
+        saveButton.isEnabled = !text.isEmpty
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         // Hide the keyboard.
         textField.resignFirstResponder()
+        
         return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        
+        checkValidMealName()
+        navigationItem.title = textField.text
     }
     
     // MARK: UIImagePickerControllerDelegate
@@ -49,6 +71,19 @@ class MealViewController: UIViewController,UITextFieldDelegate,UIImagePickerCont
         dismiss(animated: true, completion: nil)
     }
     
+    // MARK: Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let sender = sender as? UIBarButtonItem, sender === saveButton{
+            let name = nameTextField.text ?? ""
+            let rating = ratingControl.rating
+            let photo = self.photoImageView.image
+            
+            // Set the meal to be passed to MealTableViewController after the unwind segue.
+            meal = Meal(name: name, photo: photo, rating: rating)
+        }
+    }
+    
+    
     // MARK: Actions
     @IBAction func selectImageFromPhotoLibrary(_ sender: UITapGestureRecognizer) {
         // Hide the keyboard.
@@ -61,6 +96,10 @@ class MealViewController: UIViewController,UITextFieldDelegate,UIImagePickerCont
         imagePickerController.delegate = self
         present(imagePickerController, animated: true, completion: nil)
     }
+ 
     
+    @IBAction func cancel(sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
+    }
 }
 
