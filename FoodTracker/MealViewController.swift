@@ -27,6 +27,15 @@ class MealViewController: UIViewController,UITextFieldDelegate,UIImagePickerCont
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         nameTextField.delegate = self
+        
+        // Set up views if editing an existing Meal.
+        if let meal = meal {
+            navigationItem.title = meal.name
+            nameTextField.text   = meal.name
+            photoImageView.image = meal.photo
+            ratingControl.rating = meal.rating
+        }
+        
         checkValidMealName()
     }
     
@@ -99,8 +108,15 @@ class MealViewController: UIViewController,UITextFieldDelegate,UIImagePickerCont
  
     
     @IBAction func cancel(_ sender: UIBarButtonItem) {
-        print("cancel")
-        dismiss(animated: true, completion: nil)
+        // Depending on style of presentation (modal or push presentation), this view controller needs to be dismissed in two different ways.
+        let isPresentingInAddMealMode = presentingViewController is UINavigationController
+        
+        if isPresentingInAddMealMode {
+            dismiss(animated: true, completion: nil)
+        }
+        else {
+            navigationController!.popViewController(animated: true)
+        }
     }
 }
 
